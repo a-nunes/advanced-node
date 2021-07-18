@@ -16,6 +16,7 @@
   ],
   "rules": {
     "prettier/prettier": "error",
-    "camelcase": "off"
+    "camelcase": "off",
+    "@typescript-eslint/no-namespace": "off"
   }
 }

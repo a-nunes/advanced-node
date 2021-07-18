@@ -1,5 +1,13 @@
 export interface FacebookAuthentication {
-  execute(token: string): AccessToken | AuthenticationError;
+  execute(params: FacebookAuthentication.Params): FacebookAuthentication.Result;
+}
+
+export namespace FacebookAuthentication {
+  export type Params = {
+    token: string;
+  };
+
+  export type Result = AccessToken | AuthenticationError;
 }
 
 type AccessToken = {
