@@ -1,24 +1,7 @@
-import { FacebookAuthentication } from '@/domain/features';
+import { LoadFacebookUserApi } from '@/data/contracts/apis';
+import { FacebookAuthenticationService } from '@/data/services';
 
 import { mock } from 'jest-mock-extended';
-
-class FacebookAuthenticationService {
-  constructor(private readonly loadFacebookUserApi: LoadFacebookUserApi) {}
-
-  async execute(params: FacebookAuthentication.Params): Promise<void> {
-    await this.loadFacebookUserApi.loadUser(params);
-  }
-}
-
-interface LoadFacebookUserApi {
-  loadUser(params: LoadFacebookUserApi.Params): Promise<void>;
-}
-
-namespace LoadFacebookUserApi {
-  export type Params = {
-    token: string;
-  };
-}
 
 describe('FacebookAuthenticationService', () => {
   it('should call loadFacebookUserApi with correct params', async () => {
