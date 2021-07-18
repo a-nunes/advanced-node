@@ -1,3 +1,5 @@
+import { AccessToken } from '@/domain/models';
+
 export interface FacebookAuthentication {
   execute(params: FacebookAuthentication.Params): FacebookAuthentication.Result;
 }
@@ -9,10 +11,6 @@ export namespace FacebookAuthentication {
 
   export type Result = AccessToken | AuthenticationError;
 }
-
-type AccessToken = {
-  accessToken: string;
-};
 
 class AuthenticationError extends Error {
   constructor() {
