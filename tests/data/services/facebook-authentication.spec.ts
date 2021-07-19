@@ -1,5 +1,8 @@
 import { LoadFacebookUserApi } from '@/data/contracts/apis';
-import { LoadUserAccountRepository } from '@/data/contracts/repositories';
+import {
+  LoadUserAccountRepository,
+  CreateUserByFacebookAccountRepository,
+} from '@/data/contracts/repositories';
 import { FacebookAuthenticationService } from '@/data/services';
 import { AuthenticationError } from '@/domain/errors';
 
@@ -8,12 +11,14 @@ import { mock, MockProxy } from 'jest-mock-extended';
 describe('FacebookAuthenticationService', () => {
   let loadFacebookUserApi: MockProxy<LoadFacebookUserApi>;
   let loadUserAccountRepository: MockProxy<LoadUserAccountRepository>;
+  let createUserByFacebookAccountRepository: MockProxy<CreateUserByFacebookAccountRepository>;
   let sut: FacebookAuthenticationService;
   const token = 'any_token';
 
   beforeEach(() => {
     loadFacebookUserApi = mock();
     loadUserAccountRepository = mock();
+    createUserByFacebookAccountRepository = mock();
     loadFacebookUserApi.loadUser.mockResolvedValue({
       email: 'any_fb_email',
       name: 'any_fb_name',
@@ -22,6 +27,7 @@ describe('FacebookAuthenticationService', () => {
     sut = new FacebookAuthenticationService(
       loadFacebookUserApi,
       loadUserAccountRepository,
+      createUserByFacebookAccountRepository,
     );
   });
 
@@ -47,5 +53,21 @@ describe('FacebookAuthenticationService', () => {
       email: 'any_fb_email',
     });
     expect(loadUserAccountRepository.load).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call CreateUserByFacebookAccountRepository when LoadUserAccountRepository returns undefined', async () => {
+    loadUserAccountRepository.load.mockResolvedValueOnce(undefined);
+    await sut.execute({ token });
+
+    expect(
+      createUserByFacebookAccountRepository.createFromFacebook,
+    ).toHaveBeenCalledWith({
+      email: 'any_fb_email',
+      name: 'any_fb_name',
+      facebookId: 'any_fb_id',
+    });
+    expect(
+      createUserByFacebookAccountRepository.createFromFacebook,
+    ).toHaveBeenCalledTimes(1);
   });
 });
