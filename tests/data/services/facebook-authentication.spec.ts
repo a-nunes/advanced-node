@@ -2,6 +2,7 @@ import { LoadFacebookUserApi } from '@/data/contracts/apis';
 import {
   LoadUserAccountRepository,
   CreateUserByFacebookAccountRepository,
+  UpdateUserByFacebookAccountRepository,
 } from '@/data/contracts/repositories';
 import { FacebookAuthenticationService } from '@/data/services';
 import { AuthenticationError } from '@/domain/errors';
@@ -11,7 +12,9 @@ import { mock, MockProxy } from 'jest-mock-extended';
 describe('FacebookAuthenticationService', () => {
   let facebookApi: MockProxy<LoadFacebookUserApi>;
   let userAccountRepository: MockProxy<
-    LoadUserAccountRepository & CreateUserByFacebookAccountRepository
+    LoadUserAccountRepository &
+      CreateUserByFacebookAccountRepository &
+      UpdateUserByFacebookAccountRepository
   >;
   let sut: FacebookAuthenticationService;
   const token = 'any_token';
@@ -42,7 +45,7 @@ describe('FacebookAuthenticationService', () => {
     expect(authResult).toEqual(new AuthenticationError());
   });
 
-  it('should call LoadUserAccountRepository when LoadFacebookUserApi returns data', async () => {
+  it('should load user account when LoadFacebookUserApi returns data', async () => {
     await sut.execute({ token });
 
     expect(userAccountRepository.load).toHaveBeenCalledWith({
@@ -51,7 +54,7 @@ describe('FacebookAuthenticationService', () => {
     expect(userAccountRepository.load).toHaveBeenCalledTimes(1);
   });
 
-  it('should call CreateUserByFacebookAccountRepository when LoadUserAccountRepository returns undefined', async () => {
+  it('should create account when userAccountRepository returns undefined', async () => {
     userAccountRepository.load.mockResolvedValueOnce(undefined);
     await sut.execute({ token });
 
@@ -61,5 +64,21 @@ describe('FacebookAuthenticationService', () => {
       facebookId: 'any_fb_id',
     });
     expect(userAccountRepository.createFromFacebook).toHaveBeenCalledTimes(1);
+  });
+
+  it('should update user account when userAccountRepository returns data', async () => {
+    userAccountRepository.load.mockResolvedValueOnce({
+      id: 'any_id',
+      name: 'any_name',
+    });
+
+    await sut.execute({ token });
+
+    expect(userAccountRepository.updateWithFacebook).toHaveBeenCalledWith({
+      id: 'any_id',
+      name: 'any_name',
+      facebookId: 'any_fb_id',
+    });
+    expect(userAccountRepository.updateWithFacebook).toHaveBeenCalledTimes(1);
   });
 });
