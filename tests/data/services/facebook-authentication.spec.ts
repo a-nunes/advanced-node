@@ -81,4 +81,19 @@ describe('FacebookAuthenticationService', () => {
     });
     expect(userAccountRepository.updateWithFacebook).toHaveBeenCalledTimes(1);
   });
+
+  it('should update user account when userAccountRepository returns data without name', async () => {
+    userAccountRepository.load.mockResolvedValueOnce({
+      id: 'any_id',
+    });
+
+    await sut.execute({ token });
+
+    expect(userAccountRepository.updateWithFacebook).toHaveBeenCalledWith({
+      id: 'any_id',
+      name: 'any_fb_name',
+      facebookId: 'any_fb_id',
+    });
+    expect(userAccountRepository.updateWithFacebook).toHaveBeenCalledTimes(1);
+  });
 });
