@@ -5,6 +5,7 @@ import {
 } from '@/data/contracts/repositories';
 import { FacebookAuthenticationService } from '@/data/services';
 import { AuthenticationError } from '@/domain/errors';
+import { FacebookAccount } from '@/domain/models';
 
 import { mock, MockProxy } from 'jest-mock-extended';
 
@@ -52,47 +53,12 @@ describe('FacebookAuthenticationService', () => {
     expect(userAccountRepository.load).toHaveBeenCalledTimes(1);
   });
 
-  it('should create account when userAccountRepository returns undefined', async () => {
+  it('should call saveWithFacebook with FacebookAccount data', async () => {
     await sut.execute({ token });
 
-    expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledWith({
-      email: 'any_fb_email',
-      name: 'any_fb_name',
-      facebookId: 'any_fb_id',
-    });
-    expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledTimes(1);
-  });
-
-  it('should update user account when userAccountRepository returns data', async () => {
-    userAccountRepository.load.mockResolvedValueOnce({
-      id: 'any_id',
-      name: 'any_name',
-    });
-
-    await sut.execute({ token });
-
-    expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledWith({
-      id: 'any_id',
-      name: 'any_name',
-      email: 'any_fb_email',
-      facebookId: 'any_fb_id',
-    });
-    expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledTimes(1);
-  });
-
-  it('should update user account when userAccountRepository returns data without name', async () => {
-    userAccountRepository.load.mockResolvedValueOnce({
-      id: 'any_id',
-    });
-
-    await sut.execute({ token });
-
-    expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledWith({
-      id: 'any_id',
-      name: 'any_fb_name',
-      email: 'any_fb_email',
-      facebookId: 'any_fb_id',
-    });
+    expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledWith(
+      expect.any(FacebookAccount),
+    );
     expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledTimes(1);
   });
 });
