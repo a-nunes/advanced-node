@@ -15,9 +15,7 @@ export class FacebookAuthenticationService implements FacebookAuthentication {
     private readonly crypto: TokenGenerator,
   ) {}
 
-  async execute(
-    params: FacebookAuthentication.Params,
-  ): Promise<FacebookAuthentication.Result> {
+  async execute(params: FacebookAuthentication.Params): Promise<FacebookAuthentication.Result> {
     const fbData = await this.facebookApi.loadUser(params);
     if (fbData) {
       const accountData = await this.userAccountRepository.load({ email: fbData.email });
