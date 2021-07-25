@@ -1,8 +1,5 @@
 import { LoadFacebookUserApi } from '@/data/contracts/apis';
-import {
-  LoadUserAccountRepository,
-  SaveFacebookAccountRepository,
-} from '@/data/contracts/repositories';
+import { LoadUserAccountRepository, SaveFacebookAccountRepository } from '@/data/contracts/repositories';
 import { FacebookAuthenticationService } from '@/data/services';
 import { AuthenticationError } from '@/domain/errors';
 import { AccessToken, FacebookAccount } from '@/domain/models';
@@ -12,9 +9,7 @@ import { mock, MockProxy } from 'jest-mock-extended';
 
 describe('FacebookAuthenticationService', () => {
   let facebookApi: MockProxy<LoadFacebookUserApi>;
-  let userAccountRepository: MockProxy<
-    LoadUserAccountRepository & SaveFacebookAccountRepository
-  >;
+  let userAccountRepository: MockProxy<LoadUserAccountRepository & SaveFacebookAccountRepository>;
   let crypto: MockProxy<TokenGenerator>;
   let sut: FacebookAuthenticationService;
   let token: string;
@@ -29,9 +24,7 @@ describe('FacebookAuthenticationService', () => {
     });
     userAccountRepository = mock();
     userAccountRepository.load.mockResolvedValue(undefined);
-    userAccountRepository.saveWithFacebook.mockResolvedValue({
-      id: 'any_account_id',
-    });
+    userAccountRepository.saveWithFacebook.mockResolvedValue({ id: 'any_account_id' });
     crypto = mock();
     crypto.generateToken.mockResolvedValue('any_generated_token');
   });
@@ -91,5 +84,9 @@ describe('FacebookAuthenticationService', () => {
     const authResult = await sut.execute({ token });
 
     expect(authResult).toEqual(new AccessToken('any_generated_token'));
+  });
+
+  it('should rethrows if ', async () => {
+
   });
 });

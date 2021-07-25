@@ -1,9 +1,7 @@
 {
   "extends": [
     "airbnb-typescript/base",
-    "plugin:@typescript-eslint/recommended",
-    "prettier",
-    "plugin:prettier/recommended"
+    "plugin:@typescript-eslint/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -11,13 +9,12 @@
   },
   "plugins": [
       "@typescript-eslint",
-      "eslint-plugin-import-helpers",
-      "prettier"
+      "eslint-plugin-import-helpers"
   ],
   "rules": {
-    "prettier/prettier": "error",
     "camelcase": "off",
     "@typescript-eslint/no-namespace": "off",
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "max-len": ["error", { "code": 120 }]
   }
 }
