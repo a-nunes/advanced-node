@@ -19,7 +19,7 @@ describe('FacebookAuthenticationService', () => {
   let sut: FacebookAuthenticationService;
   let token: string;
 
-  beforeEach(() => {
+  beforeAll(() => {
     token = 'any_token';
     facebookApi = mock();
     facebookApi.loadUser.mockResolvedValue({
@@ -34,6 +34,9 @@ describe('FacebookAuthenticationService', () => {
     });
     crypto = mock();
     crypto.generateToken.mockResolvedValue('any_generated_token');
+  });
+
+  beforeEach(() => {
     sut = new FacebookAuthenticationService(
       facebookApi,
       userAccountRepository,
