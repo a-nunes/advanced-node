@@ -11,7 +11,7 @@ export namespace LoadUserAccountRepository {
   export type Result =
     | undefined
     | {
-        id: string;
-        name?: string;
-      };
+      id: string;
+      name?: string;
+    };
 }
