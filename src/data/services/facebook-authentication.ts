@@ -11,8 +11,7 @@ import { TokenGenerator } from '@/data/contracts/crypto';
 export class FacebookAuthenticationService implements FacebookAuthentication {
   constructor(
     private readonly facebookApi: LoadFacebookUserApi,
-    private readonly userAccountRepository: LoadUserAccountRepository &
-    SaveFacebookAccountRepository,
+    private readonly userAccountRepository: LoadUserAccountRepository & SaveFacebookAccountRepository,
     private readonly crypto: TokenGenerator,
   ) {}
 
