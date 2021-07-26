@@ -1,15 +1,25 @@
 import { HttpGetClient } from '@/infra/http';
 import { FacebookApi } from '@/infra/apis';
 
-import { mock } from 'jest-mock-extended';
+import { mock, MockProxy } from 'jest-mock-extended';
 
 describe('FacebookApi', () => {
-  it('should get app token', async () => {
-    const httpClient = mock<HttpGetClient>();
-    const clientId = 'any_client_id';
-    const clientSecret = 'any_client_secret';
-    const sut = new FacebookApi(httpClient, clientId, clientSecret);
+  let sut: FacebookApi;
+  let httpClient: MockProxy<HttpGetClient>;
+  let clientId: string;
+  let clientSecret: string;
 
+  beforeAll(() => {
+    httpClient = mock();
+    clientId = 'any_client_id';
+    clientSecret = 'any_client_secret';
+  });
+
+  beforeEach(() => {
+    sut = new FacebookApi(httpClient, clientId, clientSecret);
+  });
+
+  it('should get app token', async () => {
     await sut.loadUser({ token: 'any_user_token' });
 
     expect(httpClient.get).toHaveBeenCalledWith({
@@ -20,6 +30,5 @@ describe('FacebookApi', () => {
         grant_type: 'client_credentials',
       },
     });
-    expect(httpClient.get).toHaveBeenCalledTimes(1);
   });
 });
