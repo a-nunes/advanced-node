@@ -33,7 +33,7 @@ describe('AxiosHttpClient', () => {
     });
 
     it('should return data on success', async () => {
-      const result = await sut.get({ url: 'any_url', params: { data: 'any_data' } });
+      const result = await sut.get({ url, params });
 
       expect(result).toBe('any_data');
     });
@@ -41,7 +41,7 @@ describe('AxiosHttpClient', () => {
     it('should rethrows if axios throws', async () => {
       fakeAxios.get.mockRejectedValueOnce(new Error('axios_error'));
 
-      const result = sut.get({ url: 'any_url', params: { data: 'any_data' } });
+      const result = sut.get({ url, params });
 
       await expect(result).rejects.toThrow(new Error('axios_error'));
     });
