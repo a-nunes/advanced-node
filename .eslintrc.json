@@ -1,21 +1,16 @@
 {
   "extends": [
-    "airbnb-typescript/base",
-    "plugin:@typescript-eslint/recommended"
+    "airbnb-typescript/base"
   ],
-  "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "plugins": [
-      "@typescript-eslint",
-      "eslint-plugin-import-helpers"
-  ],
   "rules": {
     "camelcase": "off",
     "@typescript-eslint/no-namespace": "off",
     "import/prefer-default-export": "off",
     "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/no-explicit-any":"off",
     "max-len": ["error", { "code": 120 }]
   }
 }
