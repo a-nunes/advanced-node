@@ -16,7 +16,7 @@ type DebugToken = {
 type AppToken = {
   access_token: string;
 };
-export class FacebookApi {
+export class FacebookApi implements LoadFacebookUserApi {
   private readonly baseUrl = 'https://graph.facebook.com';
 
   constructor(
