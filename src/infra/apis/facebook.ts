@@ -11,7 +11,38 @@ export class FacebookApi {
   ) {}
 
   async loadUser(params: LoadFacebookUserApi.Params): Promise<LoadFacebookUserApi.Result> {
-    const appToken = await this.httpClient.get({
+    const userInfo = await this.getUserInfo(params.token);
+    return {
+      facebookId: userInfo.id,
+      name: userInfo.name,
+      email: userInfo.email,
+    };
+  }
+
+  private async getUserInfo(inputToken: string): Promise<any> {
+    const debugToken = await this.getDebugToken(inputToken);
+    return this.httpClient.get({
+      url: `${this.baseUrl}/${debugToken.data.user_id}`,
+      params: {
+        fields: ['id', 'name', 'email'].join(','),
+        access_token: inputToken,
+      },
+    });
+  }
+
+  private async getDebugToken(inputToken: string): Promise<any> {
+    const appToken = await this.getAppToken();
+    return this.httpClient.get({
+      url: `${this.baseUrl}/debug_token`,
+      params: {
+        access_token: appToken.access_token,
+        input_token: inputToken,
+      },
+    });
+  }
+
+  private async getAppToken(): Promise<any> {
+    return this.httpClient.get({
       url: `${this.baseUrl}/oauth/access_token`,
       params: {
         client_id: this.clientId,
@@ -19,27 +50,5 @@ export class FacebookApi {
         grant_type: 'client_credentials',
       },
     });
-
-    const debugToken = await this.httpClient.get({
-      url: `${this.baseUrl}/debug_token`,
-      params: {
-        access_token: appToken.access_token,
-        input_token: params.token,
-      },
-    });
-
-    const userInfo = await this.httpClient.get({
-      url: `${this.baseUrl}/${debugToken.data.user_id}`,
-      params: {
-        fields: ['id', 'name', 'email'].join(','),
-        access_token: params.token,
-      },
-    });
-
-    return {
-      facebookId: userInfo.id,
-      name: userInfo.name,
-      email: userInfo.email,
-    };
   }
 }
