@@ -11,6 +11,7 @@
     "import/prefer-default-export": "off",
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/no-explicit-any":"off",
+    "class-methods-use-this": "off",
     "max-len": ["error", { "code": 120 }]
   }
 }
