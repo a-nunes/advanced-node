@@ -6,7 +6,8 @@ jest.mock('axios');
 
 class AxiosHttpClient {
   async get(args: HttpGetClient.Params): Promise<any> {
-    await axios.get(args.url, { params: args.params });
+    const result = await axios.get(args.url, { params: args.params });
+    return result.data;
   }
 }
 
@@ -18,6 +19,10 @@ describe('AxiosHttpClient', () => {
 
   beforeAll(() => {
     fakeAxios = axios as jest.Mocked<typeof axios>;
+    fakeAxios.get.mockResolvedValue({
+      status: 200,
+      data: 'any_data',
+    });
     url = 'any_url';
     params = { data: 'any_data' };
   });
@@ -32,6 +37,20 @@ describe('AxiosHttpClient', () => {
 
       expect(fakeAxios.get).toHaveBeenCalledWith(url, { params });
       expect(fakeAxios.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return data on success', async () => {
+      const result = await sut.get({ url: 'any_url', params: { data: 'any_data' } });
+
+      expect(result).toEqual('any_data');
+    });
+
+    it('should rethrows if axios throws', async () => {
+      fakeAxios.get.mockRejectedValueOnce(new Error('axios_error'));
+
+      const result = sut.get({ url: 'any_url', params: { data: 'any_data' } });
+
+      await expect(result).rejects.toThrow(new Error('axios_error'));
     });
   });
 });
