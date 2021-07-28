@@ -1,18 +1,9 @@
 import { PgUserAccountRepository } from '@/infra/postgres/repositories';
 import { PgUser } from '@/infra/postgres/entities';
+import { makeFakeDb } from '@/tests/infra/postgres/mocks';
 
-import { IBackup, IMemoryDb, newDb } from 'pg-mem';
+import { IBackup } from 'pg-mem';
 import { getConnection, getRepository, Repository } from 'typeorm';
-
-const makeFakeDb = async (entities?: any[]): Promise<IMemoryDb> => {
-  const db = newDb();
-  const connection = await db.adapters.createTypeormConnection({
-    type: 'postgres',
-    entities: entities ?? ['src/infra/postgres/entities/index.ts'],
-  });
-  await connection.synchronize();
-  return db;
-};
 
 describe('UserAccountRepository', () => {
   let sut: PgUserAccountRepository;
@@ -22,7 +13,7 @@ describe('UserAccountRepository', () => {
 
   beforeAll(async () => {
     email = 'any_email';
-    const db = await makeFakeDb();
+    const db = await makeFakeDb([PgUser]);
     backup = db.backup();
     pgUserRepo = getRepository(PgUser);
   });
