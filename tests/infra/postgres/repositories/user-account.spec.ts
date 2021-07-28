@@ -29,11 +29,11 @@ describe('UserAccountRepository', () => {
 
   describe('load', () => {
     it('should call load with correct params', async () => {
-      await pgUserRepo.save({ email });
+      const { id } = await pgUserRepo.save({ email });
 
       const account = await sut.load({ email });
 
-      expect(account).toEqual({ id: '1' });
+      expect(account).toEqual({ id });
     });
 
     it('should return undefined if user does not exists', async () => {

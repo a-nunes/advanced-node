@@ -9,7 +9,7 @@ export class PgUserAccountRepository implements LoadUserAccountRepository {
     const pgUser = await pgUserRepository.findOne({ email: params.email });
     if (pgUser) {
       return {
-        id: pgUser.id.toString(),
+        id: pgUser.id,
         name: pgUser?.name ?? undefined,
       };
     }
