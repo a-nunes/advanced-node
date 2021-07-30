@@ -76,5 +76,13 @@ describe('UserAccountRepository', () => {
         facebookId: 'new_fb_id',
       });
     });
+
+    it('should return id of account', async () => {
+      const id = await sut.saveWithFacebook({ email, name, facebookId });
+
+      const account = await pgUserRepo.findOne({ email: 'any_email' });
+
+      expect(id).toEqual({ id: account?.id });
+    });
   });
 });
