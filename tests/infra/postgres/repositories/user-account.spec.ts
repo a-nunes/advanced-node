@@ -42,4 +42,19 @@ describe('UserAccountRepository', () => {
       expect(account).toBeUndefined();
     });
   });
+
+  describe('saveWithFacebook', () => {
+    it('should create an account if no id is provided', async () => {
+      await sut.saveWithFacebook({
+        email: 'any_email',
+        name: 'any_name',
+        facebookId: 'any_fb_id',
+      });
+
+      const account = await pgUserRepo.findOne({ email: 'any_email' });
+
+      expect(account?.id).toBeDefined();
+      expect(account?.id).toBeTruthy();
+    });
+  });
 });
