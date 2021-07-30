@@ -49,12 +49,13 @@ describe('UserAccountRepository', () => {
 
   describe('saveWithFacebook', () => {
     it('should create an account if no id is provided', async () => {
-      await sut.saveWithFacebook({ email, name, facebookId });
+      const { id } = await sut.saveWithFacebook({ email, name, facebookId });
 
       const account = await pgUserRepo.findOne({ email: 'any_email' });
 
       expect(account?.id).toBeDefined();
       expect(account?.id).toBeTruthy();
+      expect(id).toEqual(account?.id);
     });
 
     it('should update an account if id is provided', async () => {
