@@ -50,7 +50,6 @@ describe('UserAccountRepository', () => {
   describe('saveWithFacebook', () => {
     it('should create an account if no id is provided', async () => {
       const { id } = await sut.saveWithFacebook({ email, name, facebookId });
-
       const account = await pgUserRepo.findOne({ email: 'any_email' });
 
       expect(account?.id).toBeDefined();
@@ -67,7 +66,6 @@ describe('UserAccountRepository', () => {
         name: 'new_name',
         facebookId: 'new_fb_id',
       });
-
       const account = await pgUserRepo.findOne({ email: 'any_email' });
 
       expect(account).toEqual({
@@ -80,7 +78,15 @@ describe('UserAccountRepository', () => {
 
     it('should return id of account', async () => {
       const id = await sut.saveWithFacebook({ email, name, facebookId });
+      const account = await pgUserRepo.findOne({ email: 'any_email' });
 
+      expect(id).toEqual({ id: account?.id });
+    });
+
+    it('should return id of account if e-mail already exists and id is not provided', async () => {
+      await pgUserRepo.save({ email });
+
+      const id = await sut.saveWithFacebook({ email, name, facebookId });
       const account = await pgUserRepo.findOne({ email: 'any_email' });
 
       expect(id).toEqual({ id: account?.id });

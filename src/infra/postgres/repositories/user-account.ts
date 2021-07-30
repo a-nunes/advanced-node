@@ -25,12 +25,17 @@ export class PgUserAccountRepository implements LoadUserAccountRepository, SaveF
         facebookId: params.facebookId,
       });
     } else {
-      const account = await this.pgUserRepository.save({
-        email: params.email,
-        name: params.name,
-        facebookId: params.facebookId,
-      });
-      id = account.id;
+      const account = await this.pgUserRepository.findOne({ email: params.email });
+      if (account) {
+        id = account.id;
+      } else {
+        const createdAccount = await this.pgUserRepository.save({
+          email: params.email,
+          name: params.name,
+          facebookId: params.facebookId,
+        });
+        id = createdAccount.id;
+      }
     }
     return { id };
   }
