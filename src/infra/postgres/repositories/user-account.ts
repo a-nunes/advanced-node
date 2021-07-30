@@ -3,7 +3,7 @@ import { LoadUserAccountRepository, SaveFacebookAccountRepository } from '@/data
 
 import { getRepository } from 'typeorm';
 
-export class PgUserAccountRepository implements LoadUserAccountRepository {
+export class PgUserAccountRepository implements LoadUserAccountRepository, SaveFacebookAccountRepository {
   private pgUserRepository = getRepository(PgUser);
 
   async load(params: LoadUserAccountRepository.Params): Promise<LoadUserAccountRepository.Result> {
@@ -16,18 +16,22 @@ export class PgUserAccountRepository implements LoadUserAccountRepository {
     }
   }
 
-  async saveWithFacebook(params: SaveFacebookAccountRepository.Params): Promise<void> {
-    if (params.id) {
-      await this.pgUserRepository.update(params.id, {
+  async saveWithFacebook(params: SaveFacebookAccountRepository.Params): Promise<SaveFacebookAccountRepository.Result> {
+    let { id } = params;
+
+    if (id) {
+      await this.pgUserRepository.update(id, {
         name: params.name,
         facebookId: params.facebookId,
       });
     } else {
-      await this.pgUserRepository.save({
+      const account = await this.pgUserRepository.save({
         email: params.email,
         name: params.name,
         facebookId: params.facebookId,
       });
+      id = account.id;
     }
+    return { id };
   }
 }
