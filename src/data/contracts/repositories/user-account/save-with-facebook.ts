@@ -1,7 +1,5 @@
 export interface SaveFacebookAccountRepository {
-  saveWithFacebook(
-    params: SaveFacebookAccountRepository.Params,
-  ): Promise<SaveFacebookAccountRepository.Result>;
+  saveWithFacebook(params: SaveFacebookAccountRepository.Params): Promise<SaveFacebookAccountRepository.Result>;
 }
 export namespace SaveFacebookAccountRepository {
   export type Params = {
