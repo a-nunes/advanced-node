@@ -10,9 +10,13 @@ describe('UserAccountRepository', () => {
   let pgUserRepo: Repository<PgUser>;
   let backup: IBackup;
   let email: string;
+  let name: string;
+  let facebookId: string;
 
   beforeAll(async () => {
     email = 'any_email';
+    name = 'any_name';
+    facebookId = 'any_fb_id';
     const db = await makeFakeDb([PgUser]);
     backup = db.backup();
     pgUserRepo = getRepository(PgUser);
@@ -45,16 +49,32 @@ describe('UserAccountRepository', () => {
 
   describe('saveWithFacebook', () => {
     it('should create an account if no id is provided', async () => {
-      await sut.saveWithFacebook({
-        email: 'any_email',
-        name: 'any_name',
-        facebookId: 'any_fb_id',
-      });
+      await sut.saveWithFacebook({ email, name, facebookId });
 
       const account = await pgUserRepo.findOne({ email: 'any_email' });
 
       expect(account?.id).toBeDefined();
       expect(account?.id).toBeTruthy();
+    });
+
+    it('should update an account if id is provided', async () => {
+      const { id } = await pgUserRepo.save({ email, name });
+
+      await sut.saveWithFacebook({
+        id,
+        email: 'new_email',
+        name: 'new_name',
+        facebookId: 'new_fb_id',
+      });
+
+      const account = await pgUserRepo.findOne({ email: 'any_email' });
+
+      expect(account).toEqual({
+        id,
+        name: 'new_name',
+        email: 'any_email',
+        facebookId: 'new_fb_id',
+      });
     });
   });
 });
