@@ -1,5 +1,6 @@
 import { AuthenticationError } from '@/domain/errors';
 import { FacebookAuthentication } from '@/domain/features';
+import { AccessToken } from '@/domain/models';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 type HttpResponse = {
@@ -11,17 +12,30 @@ class FacebookLoginController {
   constructor(private readonly facebookAuth: FacebookAuthentication) {}
 
   async handle(httpRequest: any): Promise<HttpResponse> {
-    if (httpRequest.token === '' || httpRequest.token === null || httpRequest.token === undefined) {
+    try {
+      if (httpRequest.token === '' || httpRequest.token === null || httpRequest.token === undefined) {
+        return {
+          statusCode: 400,
+          data: new Error('The field token is required.'),
+        };
+      }
+      const res = await this.facebookAuth.execute(httpRequest);
+      if (res instanceof AccessToken) {
+        return {
+          statusCode: 200,
+          data: res,
+        };
+      }
       return {
-        statusCode: 400,
-        data: new Error('The field token is required.'),
+        statusCode: 401,
+        data: res,
+      };
+    } catch {
+      return {
+        statusCode: 500,
+        data: new Error('Internal Server Error'),
       };
     }
-    await this.facebookAuth.execute(httpRequest);
-    return {
-      statusCode: 401,
-      data: new AuthenticationError(),
-    };
   }
 }
 
@@ -33,6 +47,7 @@ describe('FacebookLoginController', () => {
   beforeAll(() => {
     httpRequest = { token: 'valid_token' };
     facebookAuth = mock();
+    facebookAuth.execute.mockResolvedValue(new AccessToken('valid_token'));
   });
 
   beforeEach(() => {
@@ -66,7 +81,8 @@ describe('FacebookLoginController', () => {
     });
   });
 
-  it('should return 401 if token is invalid', async () => {
+  it('should return 401 if if authentication fails', async () => {
+    facebookAuth.execute.mockResolvedValueOnce(new AuthenticationError());
     const res = await sut.handle({ token: 'invalid_token' });
 
     expect(res).toEqual({
@@ -80,5 +96,14 @@ describe('FacebookLoginController', () => {
 
     expect(facebookAuth.execute).toHaveBeenCalledWith({ token: 'valid_token' });
     expect(facebookAuth.execute).toHaveBeenCalledTimes(1);
+  });
+
+  it('should return 200 and accessToken if authentication succeeds', async () => {
+    const res = await sut.handle(httpRequest);
+
+    expect(res).toEqual({
+      statusCode: 200,
+      data: new AccessToken('valid_token'),
+    });
   });
 });
