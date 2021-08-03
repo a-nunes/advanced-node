@@ -19,16 +19,16 @@ class FacebookLoginController {
           data: new Error('The field token is required.'),
         };
       }
-      const res = await this.facebookAuth.execute(httpRequest);
-      if (res instanceof AccessToken) {
+      const result = await this.facebookAuth.execute(httpRequest);
+      if (result instanceof AccessToken) {
         return {
           statusCode: 200,
-          data: res,
+          data: { accessToken: result.value },
         };
       }
       return {
         statusCode: 401,
-        data: res,
+        data: result,
       };
     } catch {
       return {
@@ -47,7 +47,7 @@ describe('FacebookLoginController', () => {
   beforeAll(() => {
     httpRequest = { token: 'valid_token' };
     facebookAuth = mock();
-    facebookAuth.execute.mockResolvedValue(new AccessToken('valid_token'));
+    facebookAuth.execute.mockResolvedValue(new AccessToken('access_token'));
   });
 
   beforeEach(() => {
@@ -103,7 +103,7 @@ describe('FacebookLoginController', () => {
 
     expect(res).toEqual({
       statusCode: 200,
-      data: new AccessToken('valid_token'),
+      data: { accessToken: 'access_token' },
     });
   });
 });
