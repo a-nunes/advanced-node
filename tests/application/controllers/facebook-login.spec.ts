@@ -21,9 +21,13 @@ class FacebookLoginController {
 }
 
 describe('FacebookLoginController', () => {
+  let sut: FacebookLoginController;
+
+  beforeEach(() => {
+    sut = new FacebookLoginController();
+  });
   it('should return 400 if token is empty', async () => {
     const httpRequest = { token: '' };
-    const sut = new FacebookLoginController();
 
     const res = await sut.handle(httpRequest);
 
@@ -35,7 +39,6 @@ describe('FacebookLoginController', () => {
 
   it('should return 400 if token is null', async () => {
     const httpRequest = { token: null };
-    const sut = new FacebookLoginController();
 
     const res = await sut.handle(httpRequest);
 
@@ -47,7 +50,6 @@ describe('FacebookLoginController', () => {
 
   it('should return 400 if token is undefined', async () => {
     const httpRequest = { token: undefined };
-    const sut = new FacebookLoginController();
 
     const res = await sut.handle(httpRequest);
 
@@ -59,7 +61,6 @@ describe('FacebookLoginController', () => {
 
   it('should return 401 if token is invalid', async () => {
     const httpRequest = { token: 'invalid_token' };
-    const sut = new FacebookLoginController();
 
     const res = await sut.handle(httpRequest);
 
