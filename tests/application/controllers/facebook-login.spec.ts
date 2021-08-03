@@ -10,10 +10,10 @@ import { mock, MockProxy } from 'jest-mock-extended';
 describe('FacebookLoginController', () => {
   let sut: FacebookLoginController;
   let facebookAuth: MockProxy<FacebookAuthentication>;
-  let httpRequest: object;
+  let token: string;
 
   beforeAll(() => {
-    httpRequest = { token: 'valid_token' };
+    token = 'valid_token';
     facebookAuth = mock();
     facebookAuth.execute.mockResolvedValue(new AccessToken('access_token'));
   });
@@ -60,14 +60,14 @@ describe('FacebookLoginController', () => {
   });
 
   it('should call FacebookAuthentication with correct params', async () => {
-    await sut.handle(httpRequest);
+    await sut.handle({ token });
 
     expect(facebookAuth.execute).toHaveBeenCalledWith({ token: 'valid_token' });
     expect(facebookAuth.execute).toHaveBeenCalledTimes(1);
   });
 
   it('should return 200 and accessToken if authentication succeeds', async () => {
-    const res = await sut.handle(httpRequest);
+    const res = await sut.handle({ token });
 
     expect(res).toEqual({
       statusCode: 200,
@@ -79,7 +79,7 @@ describe('FacebookLoginController', () => {
     const error = new Error('infra_error');
     facebookAuth.execute.mockRejectedValueOnce(error);
 
-    const res = await sut.handle(httpRequest);
+    const res = await sut.handle({ token });
 
     expect(res).toEqual({
       statusCode: 500,
