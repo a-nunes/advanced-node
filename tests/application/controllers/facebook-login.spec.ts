@@ -1,16 +1,22 @@
+import { AuthenticationError } from '@/domain/errors';
+
 type HttpResponse = {
   statusCode: number,
   data: any,
 };
 
 class FacebookLoginController {
-  async handle(httpRequest: any): Promise<HttpResponse | undefined> {
+  async handle(httpRequest: any): Promise<HttpResponse> {
     if (httpRequest.token === '' || httpRequest.token === null || httpRequest.token === undefined) {
       return {
         statusCode: 400,
         data: new Error('The field token is required.'),
       };
     }
+    return {
+      statusCode: 401,
+      data: new AuthenticationError(),
+    };
   }
 }
 
@@ -48,6 +54,18 @@ describe('FacebookLoginController', () => {
     expect(res).toEqual({
       statusCode: 400,
       data: new Error('The field token is required.'),
+    });
+  });
+
+  it('should return 401 if token is invalid', async () => {
+    const httpRequest = { token: 'invalid_token' };
+    const sut = new FacebookLoginController();
+
+    const res = await sut.handle(httpRequest);
+
+    expect(res).toEqual({
+      statusCode: 401,
+      data: new AuthenticationError(),
     });
   });
 });
