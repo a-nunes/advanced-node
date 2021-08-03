@@ -8,6 +8,13 @@ type HttpResponse = {
   data: any,
 };
 
+class ServerError extends Error {
+  constructor(error?: Error) {
+    super('Internal Server Error. Please, try again soon.');
+    this.name = 'ServerError';
+    this.stack = error?.stack;
+  }
+}
 class FacebookLoginController {
   constructor(private readonly facebookAuth: FacebookAuthentication) {}
 
@@ -30,10 +37,10 @@ class FacebookLoginController {
         statusCode: 401,
         data: result,
       };
-    } catch {
+    } catch (error) {
       return {
         statusCode: 500,
-        data: new Error('Internal Server Error'),
+        data: new ServerError(error),
       };
     }
   }
@@ -104,6 +111,18 @@ describe('FacebookLoginController', () => {
     expect(res).toEqual({
       statusCode: 200,
       data: { accessToken: 'access_token' },
+    });
+  });
+
+  it('should return 500 if authentication throws', async () => {
+    const error = new Error('infra_error');
+    facebookAuth.execute.mockRejectedValueOnce(error);
+
+    const res = await sut.handle(httpRequest);
+
+    expect(res).toEqual({
+      statusCode: 500,
+      data: new ServerError(error),
     });
   });
 });
