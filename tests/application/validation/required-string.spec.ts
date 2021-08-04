@@ -6,8 +6,10 @@ class RequiredStringValidator {
     private readonly fieldName: string,
   ) {}
 
-  validate(): Error {
-    return new RequiredFieldError(this.fieldName);
+  validate(): Error | undefined {
+    if (this.field === '' || this.field === null || this.field === undefined) {
+      return new RequiredFieldError(this.fieldName);
+    }
   }
 }
 
@@ -34,5 +36,13 @@ describe('RequiredStringValidator', () => {
     const result = sut.validate();
 
     expect(result).toEqual(new RequiredFieldError('any_field'));
+  });
+
+  it('should return undefined if field is not empty', () => {
+    const sut = new RequiredStringValidator('any_string', 'any_field');
+
+    const result = sut.validate();
+
+    expect(result).toBeUndefined();
   });
 });
