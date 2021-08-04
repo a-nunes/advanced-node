@@ -27,4 +27,12 @@ describe('RequiredStringValidator', () => {
 
     expect(result).toEqual(new RequiredFieldError('any_field'));
   });
+
+  it('should return error if field is null', () => {
+    const sut = new RequiredStringValidator(null as any, 'any_field');
+
+    const result = sut.validate();
+
+    expect(result).toEqual(new RequiredFieldError('any_field'));
+  });
 });
