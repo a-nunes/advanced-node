@@ -1,17 +1,5 @@
 import { RequiredFieldError } from '@/application/errors';
-
-class RequiredStringValidator {
-  constructor(
-    private readonly field: string,
-    private readonly fieldName: string,
-  ) {}
-
-  validate(): Error | undefined {
-    if (this.field === '' || this.field === null || this.field === undefined) {
-      return new RequiredFieldError(this.fieldName);
-    }
-  }
-}
+import { RequiredStringValidator } from '@/application/validation';
 
 describe('RequiredStringValidator', () => {
   it('should return error if field is empty', () => {
