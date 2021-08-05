@@ -1,7 +1,7 @@
 import { FacebookLoginController } from '@/application/controllers';
 import { ServerError } from '@/application/errors';
 import { UnauthorizedError } from '@/application/errors/http/unauthorized';
-import { ValidatorComposite } from '@/application/validation';
+import { RequiredStringValidator, ValidatorComposite } from '@/application/validation';
 import { AuthenticationError } from '@/domain/errors';
 import { FacebookAuthentication } from '@/domain/features';
 import { AccessToken } from '@/domain/models';
@@ -35,6 +35,9 @@ describe('FacebookLoginController', () => {
 
     const res = await sut.handle({ token });
 
+    expect(ValidatorComposite).toHaveBeenCalledWith([
+      new RequiredStringValidator('valid_token', 'token'),
+    ]);
     expect(res).toEqual({
       statusCode: 400,
       data: error,
