@@ -1,11 +1,15 @@
 import { FacebookLoginController } from '@/application/controllers';
 import { ServerError } from '@/application/errors';
 import { UnauthorizedError } from '@/application/errors/http/unauthorized';
+import { RequiredStringValidator } from '@/application/validation';
 import { AuthenticationError } from '@/domain/errors';
 import { FacebookAuthentication } from '@/domain/features';
 import { AccessToken } from '@/domain/models';
 
 import { mock, MockProxy } from 'jest-mock-extended';
+import { mocked } from 'ts-jest/utils';
+
+jest.mock('@/application/validation/required-string');
 
 describe('FacebookLoginController', () => {
   let sut: FacebookLoginController;
@@ -22,30 +26,18 @@ describe('FacebookLoginController', () => {
     sut = new FacebookLoginController(facebookAuth);
   });
 
-  it('should return 400 if token is empty', async () => {
-    const res = await sut.handle({ token: '' });
+  it('should return 400 if authentication fails', async () => {
+    const error = new Error('authentication_fails');
+    const RequiredStringValidatorSpy = jest.fn().mockImplementationOnce(() => ({
+      validate: jest.fn().mockReturnValueOnce(error),
+    }));
+    mocked(RequiredStringValidator).mockImplementationOnce(RequiredStringValidatorSpy);
+
+    const res = await sut.handle({ token });
 
     expect(res).toEqual({
       statusCode: 400,
-      data: new Error('The field token is required.'),
-    });
-  });
-
-  it('should return 400 if token is null', async () => {
-    const res = await sut.handle({ token: null as any });
-
-    expect(res).toEqual({
-      statusCode: 400,
-      data: new Error('The field token is required.'),
-    });
-  });
-
-  it('should return 400 if token is undefined', async () => {
-    const res = await sut.handle({ token: undefined as any });
-
-    expect(res).toEqual({
-      statusCode: 400,
-      data: new Error('The field token is required.'),
+      data: error,
     });
   });
 
