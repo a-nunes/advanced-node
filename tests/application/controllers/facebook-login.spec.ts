@@ -1,7 +1,7 @@
 import { FacebookLoginController } from '@/application/controllers';
 import { ServerError } from '@/application/errors';
 import { UnauthorizedError } from '@/application/errors/http/unauthorized';
-import { RequiredStringValidator } from '@/application/validation';
+import { ValidatorComposite } from '@/application/validation';
 import { AuthenticationError } from '@/domain/errors';
 import { FacebookAuthentication } from '@/domain/features';
 import { AccessToken } from '@/domain/models';
@@ -9,7 +9,7 @@ import { AccessToken } from '@/domain/models';
 import { mock, MockProxy } from 'jest-mock-extended';
 import { mocked } from 'ts-jest/utils';
 
-jest.mock('@/application/validation/required-string');
+jest.mock('@/application/validation/composite');
 
 describe('FacebookLoginController', () => {
   let sut: FacebookLoginController;
@@ -28,10 +28,10 @@ describe('FacebookLoginController', () => {
 
   it('should return 400 if validation fails', async () => {
     const error = new Error('validation_fails');
-    const RequiredStringValidatorSpy = jest.fn().mockImplementationOnce(() => ({
+    const ValidatorCompositeSpy = jest.fn().mockImplementationOnce(() => ({
       validate: jest.fn().mockReturnValueOnce(error),
     }));
-    mocked(RequiredStringValidator).mockImplementationOnce(RequiredStringValidatorSpy);
+    mocked(ValidatorComposite).mockImplementationOnce(ValidatorCompositeSpy);
 
     const res = await sut.handle({ token });
 
