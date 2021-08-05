@@ -14,6 +14,7 @@
     "class-methods-use-this": "off",
     "max-classes-per-file": "off",
     "consistent-return": "off",
+    "no-restricted-syntax": "off",
     "max-len": ["error", { "code": 120 }]
   }
 }
