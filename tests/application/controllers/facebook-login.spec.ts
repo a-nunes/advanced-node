@@ -26,8 +26,8 @@ describe('FacebookLoginController', () => {
     sut = new FacebookLoginController(facebookAuth);
   });
 
-  it('should return 400 if authentication fails', async () => {
-    const error = new Error('authentication_fails');
+  it('should return 400 if validation fails', async () => {
+    const error = new Error('validation_fails');
     const RequiredStringValidatorSpy = jest.fn().mockImplementationOnce(() => ({
       validate: jest.fn().mockReturnValueOnce(error),
     }));
