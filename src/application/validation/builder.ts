@@ -8,8 +8,8 @@ export class ValidatorBuilder {
     private readonly fieldName: string,
   ) {}
 
-  static of(field: string, fieldName: string): ValidatorBuilder {
-    return new ValidatorBuilder(field, fieldName);
+  static of(params: { field: string, fieldName: string }): ValidatorBuilder {
+    return new ValidatorBuilder(params.field, params.fieldName);
   }
 
   required(): ValidatorBuilder {
