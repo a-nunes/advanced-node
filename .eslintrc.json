@@ -15,6 +15,8 @@
     "max-classes-per-file": "off",
     "consistent-return": "off",
     "no-restricted-syntax": "off",
+    "no-unused-vars": ["error", {"args": "all", "argsIgnorePattern": "^_"}],
+    "@typescript-eslint/no-unused-vars": ["error", {"args": "all", "argsIgnorePattern": "^_"}],
     "max-len": ["error", { "code": 120 }]
   }
 }
