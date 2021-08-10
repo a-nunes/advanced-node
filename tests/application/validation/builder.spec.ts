@@ -1,31 +1,4 @@
-import { RequiredStringValidator } from '@/application/validation';
-
-interface Validator {
-  validate(): Error | undefined;
-}
-
-class ValidatorBuilder {
-  private validators: Validator[] = [];
-
-  private constructor(
-    private readonly field: string,
-    private readonly fieldName: string,
-  ) {}
-
-  static of(field: string, fieldName: string): ValidatorBuilder {
-    return new ValidatorBuilder(field, fieldName);
-  }
-
-  required(): ValidatorBuilder {
-    const validator = new RequiredStringValidator(this.field, this.fieldName);
-    this.validators.push(validator);
-    return this;
-  }
-
-  build(): Validator[] {
-    return this.validators;
-  }
-}
+import { RequiredStringValidator, ValidatorBuilder } from '@/application/validation';
 
 describe('ValidatorBuilder', () => {
   it('should return a RequiredStringValidator', () => {
