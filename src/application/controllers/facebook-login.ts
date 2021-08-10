@@ -1,38 +1,26 @@
-import {
-  badRequest, HttpResponse, ok, serverError, unauthorized,
-} from '@/application/helpers';
-import { ValidatorBuilder, ValidatorComposite } from '@/application/validation';
+import { Controller } from '@/application/controllers';
+import { HttpResponse, ok, unauthorized } from '@/application/helpers';
+import { Validator, ValidatorBuilder } from '@/application/validation';
 import { FacebookAuthentication } from '@/domain/features';
 import { AccessToken } from '@/domain/models';
 
-type HttpRequest = {
-  token: string;
-};
-
+type HttpRequest = { token: string; };
 type Model = Error | { accessToken: string };
-export class FacebookLoginController {
-  constructor(private readonly facebookAuth: FacebookAuthentication) {}
-
-  async handle({ token }: HttpRequest): Promise<HttpResponse<Model>> {
-    try {
-      const error = this.validate({ token });
-      if (error) {
-        return badRequest(error);
-      }
-      const accessToken = await this.facebookAuth.execute({ token });
-      if (accessToken instanceof AccessToken) {
-        return ok({ accessToken: accessToken.value });
-      }
-      return unauthorized();
-    } catch (error) {
-      return serverError(error);
-    }
+export class FacebookLoginController extends Controller {
+  constructor(private readonly facebookAuth: FacebookAuthentication) {
+    super();
   }
 
-  private validate({ token }: HttpRequest): Error | undefined {
-    const validators = [
-      ...ValidatorBuilder.of(token, 'token').required().build(),
+  async execute({ token }: HttpRequest): Promise<HttpResponse<Model>> {
+    const accessToken = await this.facebookAuth.execute({ token });
+    return accessToken instanceof AccessToken
+      ? ok({ accessToken: accessToken.value })
+      : unauthorized();
+  }
+
+  override buildValidators({ token }: HttpRequest): Validator[] {
+    return [
+      ...ValidatorBuilder.of({ field: token, fieldName: 'token' }).required().build(),
     ];
-    return new ValidatorComposite(validators).validate();
   }
 }
