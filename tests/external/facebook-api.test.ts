@@ -16,4 +16,13 @@ describe('Facebook Api Integration Tests', () => {
       facebookId: '100653928990288',
     });
   });
+
+  it('should return undefined if token is invalid', async () => {
+    const axiosClient = new AxiosHttpClient();
+    const sut = new FacebookApi(axiosClient, env.facebookApi.clientId, env.facebookApi.clientSecret);
+
+    const fbUser = await sut.loadUser({ token: 'invalid_token' });
+
+    expect(fbUser).toBeUndefined();
+  });
 });
