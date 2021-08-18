@@ -19,6 +19,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@jest-mock/express": "^1.4.4",
     "@types/axios": "^0.14.0",
     "@types/cors": "^2.8.12",
     "@types/eslint": "^7.28.0",
