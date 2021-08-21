@@ -4,7 +4,7 @@
   "description": "Curso de NodeJS Avançado com TDD, Clean Architecture e SOLID.",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/main",
+    "start": "node -r dotenv/config dist/main",
     "build": "rimraf dist && tsc -p tsconfig-build.json",
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
@@ -50,6 +50,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "helmet": "^4.6.0",
     "jsonwebtoken": "^8.5.1",
