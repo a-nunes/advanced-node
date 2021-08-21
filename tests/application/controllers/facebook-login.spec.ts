@@ -1,3 +1,5 @@
+import { mock, MockProxy } from 'jest-mock-extended';
+import { mocked } from 'ts-jest/utils';
 import { FacebookLoginController } from '@/application/controllers';
 import { ServerError } from '@/application/errors';
 import { UnauthorizedError } from '@/application/errors/http/unauthorized';
@@ -5,9 +7,6 @@ import { RequiredStringValidator, ValidatorComposite } from '@/application/valid
 import { AuthenticationError } from '@/domain/errors';
 import { FacebookAuthentication } from '@/domain/features';
 import { AccessToken } from '@/domain/models';
-
-import { mock, MockProxy } from 'jest-mock-extended';
-import { mocked } from 'ts-jest/utils';
 
 jest.mock('@/application/validation/composite');
 

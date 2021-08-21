@@ -1,9 +1,8 @@
+import { mocked } from 'ts-jest/utils';
 import { Controller } from '@/application/controllers';
 import { ServerError } from '@/application/errors';
 import { HttpResponse } from '@/application/helpers';
 import { ValidatorComposite } from '@/application/validation';
-
-import { mocked } from 'ts-jest/utils';
 
 jest.mock('@/application/validation/composite');
 
