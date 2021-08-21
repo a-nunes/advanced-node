@@ -1,7 +1,9 @@
 import { Controller } from '@/application/controllers';
-import { ExpressRouter } from '@/infra/http';
+import { adaptExpressRouter } from '@/infra/http';
 
-import { Request, Response } from 'express';
+import {
+  NextFunction, Request, RequestHandler, Response,
+} from 'express';
 import { mock, MockProxy } from 'jest-mock-extended';
 import { getMockReq, getMockRes } from '@jest-mock/express';
 
@@ -9,7 +11,8 @@ describe('ExpressRouter', () => {
   let controller: MockProxy<Controller>;
   let req: Request;
   let res: Response;
-  let sut: ExpressRouter;
+  let next: NextFunction;
+  let sut: RequestHandler;
 
   beforeAll(() => {
     controller = mock();
@@ -18,26 +21,25 @@ describe('ExpressRouter', () => {
       data: { data: 'any_res_data' },
     });
     req = getMockReq({
-      body: {
-        data: 'any_req_data',
-      },
+      body: { data: 'any_req_data' },
     });
     res = getMockRes().res;
+    next = getMockRes().next;
   });
 
   beforeEach(() => {
-    sut = new ExpressRouter(controller);
+    sut = adaptExpressRouter(controller);
   });
 
   it('should call handle with correct params', async () => {
-    await sut.adapt(req, res);
+    await sut(req, res, next);
 
     expect(controller.handle).toHaveBeenCalledWith({ data: 'any_req_data' });
     expect(controller.handle).toHaveBeenCalledTimes(1);
   });
 
   it('should respond status 200 and valid data', async () => {
-    await sut.adapt(req, res);
+    await sut(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.status).toHaveBeenCalledTimes(1);
@@ -51,7 +53,7 @@ describe('ExpressRouter', () => {
       data: new Error('any_error'),
     });
 
-    await sut.adapt(req, res);
+    await sut(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.status).toHaveBeenCalledTimes(1);
