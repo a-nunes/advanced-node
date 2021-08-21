@@ -82,14 +82,5 @@ describe('UserAccountRepository', () => {
 
       expect(id).toEqual({ id: account?.id });
     });
-
-    it('should return id of account if e-mail already exists and id is not provided', async () => {
-      await pgUserRepo.save({ email });
-
-      const id = await sut.saveWithFacebook({ email, name, facebookId });
-      const account = await pgUserRepo.findOne({ email: 'any_email' });
-
-      expect(id).toEqual({ id: account?.id });
-    });
   });
 });

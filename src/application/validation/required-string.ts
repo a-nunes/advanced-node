@@ -3,12 +3,12 @@ import { Validator } from '@/application/validation';
 
 export class RequiredStringValidator implements Validator {
   constructor(
-    private readonly field: string,
+    private readonly fieldValue: string,
     private readonly fieldName: string,
   ) {}
 
   validate(): Error | undefined {
-    if (this.field === '' || this.field === null || this.field === undefined) {
+    if (this.fieldValue === '' || this.fieldValue === null || this.fieldValue === undefined) {
       return new RequiredFieldError(this.fieldName);
     }
   }

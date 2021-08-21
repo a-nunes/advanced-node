@@ -20,7 +20,7 @@ export class FacebookLoginController extends Controller {
 
   override buildValidators({ token }: HttpRequest): Validator[] {
     return [
-      ...ValidatorBuilder.of({ field: token, fieldName: 'token' }).required().build(),
+      ...ValidatorBuilder.of({ fieldValue: token, fieldName: 'token' }).required().build(),
     ];
   }
 }
