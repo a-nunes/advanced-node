@@ -8,6 +8,6 @@ export class JwtTokenGenerator implements TokenGenerator {
 
   async generateToken({ expirationInMs, key }: Params): Promise<Result> {
     const expirationInSeconds = expirationInMs / 1000;
-    return jwt.sign(key, this.secret, { expiresIn: expirationInSeconds });
+    return jwt.sign({ key }, this.secret, { expiresIn: expirationInSeconds });
   }
 }
