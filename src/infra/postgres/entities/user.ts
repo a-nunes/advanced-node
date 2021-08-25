@@ -1,9 +1,8 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
-import { v4 } from 'uuid';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'usuarios' })
 export class PgUser {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
   @Column()
@@ -14,8 +13,4 @@ export class PgUser {
 
   @Column({ name: 'id_facebook', nullable: true })
   facebookId?: string;
-
-  constructor() {
-    this.id = v4();
-  }
 }
