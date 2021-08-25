@@ -1,21 +1,25 @@
 {
   "extends": [
-    "airbnb-typescript/base",
-    "plugin:@typescript-eslint/recommended",
-    "prettier",
-    "plugin:prettier/recommended"
+    "airbnb-typescript/base"
   ],
-  "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "plugins": [
-      "@typescript-eslint",
-      "eslint-plugin-import-helpers",
-      "prettier"
-  ],
   "rules": {
-    "prettier/prettier": "error",
-    "camelcase": "off"
+    "camelcase": "off",
+    "@typescript-eslint/naming-convention": "off",
+    "@typescript-eslint/no-namespace": "off",
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/lines-between-class-members": "off",
+    "@typescript-eslint/no-unused-vars": ["error", {"args": "all", "argsIgnorePattern": "^_"}],
+    "import/prefer-default-export": "off",
+    "import/extensions": [2, "never"],
+    "class-methods-use-this": "off",
+    "max-classes-per-file": "off",
+    "consistent-return": "off",
+    "no-restricted-syntax": "off",
+    "no-unused-vars": ["error", {"args": "all", "argsIgnorePattern": "^_"}],
+    "max-len": ["error", { "code": 120 }]
   }
 }
