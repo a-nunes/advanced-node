@@ -16,8 +16,6 @@ export class PgUser {
   facebookId?: string;
 
   constructor() {
-    if (!this.id) {
-      this.id = v4();
-    }
+    this.id = v4();
   }
 }
