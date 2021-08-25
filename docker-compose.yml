@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  database_advanced_node:
+    image: postgres
+    container_name: database_advanced_node
+    restart: always
+    ports:
+      - 5544:5432
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=node
+      - POSTGRES_DB=advanced_node
+    volumes:
+      - pgdata:/data/postgres
+
+volumes:
+  pgdata:
+    driver: local
