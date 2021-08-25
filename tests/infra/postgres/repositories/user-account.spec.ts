@@ -32,7 +32,8 @@ describe('UserAccountRepository', () => {
 
   describe('load', () => {
     it('should call load with correct params', async () => {
-      const { id } = await pgUserRepo.save({ email });
+      const user = pgUserRepo.create({ email });
+      const { id } = await pgUserRepo.save(user);
 
       const account = await sut.load({ email });
 
@@ -57,7 +58,8 @@ describe('UserAccountRepository', () => {
     });
 
     it('should update an account if id is provided', async () => {
-      const { id } = await pgUserRepo.save({ email, name });
+      const user = pgUserRepo.create({ email });
+      const { id } = await pgUserRepo.save(user);
 
       await sut.saveWithFacebook({
         id,

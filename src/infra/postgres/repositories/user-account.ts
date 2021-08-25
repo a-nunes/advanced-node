@@ -26,7 +26,8 @@ export class PgUserAccountRepository implements LoadUserAccountRepository, SaveF
       await pgUserRepository.update(id, { name, facebookId });
       return { id };
     }
-    const account = await pgUserRepository.save({ email, name, facebookId });
+    const account = pgUserRepository.create({ email, name, facebookId });
+    await pgUserRepository.save(account);
     return { id: account.id };
   }
 }
