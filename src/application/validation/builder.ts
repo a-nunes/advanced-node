@@ -1,6 +1,6 @@
 import { RequiredStringValidator, Validator } from '@/application/validation';
 
-type Params = { fieldValue: string, fieldName: string };
+type Input = { fieldValue: string, fieldName: string };
 export class ValidatorBuilder {
   private validators: Validator[] = [];
 
@@ -9,7 +9,7 @@ export class ValidatorBuilder {
     private readonly fieldName: string,
   ) {}
 
-  static of({ fieldName, fieldValue }: Params): ValidatorBuilder {
+  static of({ fieldName, fieldValue }: Input): ValidatorBuilder {
     return new ValidatorBuilder(fieldValue, fieldName);
   }
 

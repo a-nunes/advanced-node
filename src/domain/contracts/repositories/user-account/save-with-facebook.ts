@@ -1,15 +1,15 @@
 export interface SaveFacebookAccount {
-  saveWithFacebook(params: SaveFacebookAccount.Params): Promise<SaveFacebookAccount.Result>;
+  saveWithFacebook(params: SaveFacebookAccount.Input): Promise<SaveFacebookAccount.Output>;
 }
 export namespace SaveFacebookAccount {
-  export type Params = {
+  export type Input = {
     id?: string;
     email: string;
     name: string;
     facebookId: string;
   };
 
-  export type Result = {
+  export type Output = {
     id: string;
   };
 }
