@@ -1,6 +1,6 @@
 {
   "name": "advanced-node",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Curso de NodeJS Avançado com TDD, Clean Architecture e SOLID.",
   "main": "index.js",
   "scripts": {
