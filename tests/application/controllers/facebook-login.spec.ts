@@ -1,24 +1,20 @@
-import { mock, MockProxy } from 'jest-mock-extended';
 import { mocked } from 'ts-jest/utils';
 import { FacebookLoginController } from '@/application/controllers';
-import { ServerError } from '@/application/errors';
-import { UnauthorizedError } from '@/application/errors/http/unauthorized';
+import { UnauthorizedError } from '@/application/errors';
 import { RequiredStringValidator, ValidatorComposite } from '@/application/validation';
-import { AuthenticationError } from '@/domain/errors';
-import { FacebookAuthentication } from '@/domain/features';
-import { AccessToken } from '@/domain/models';
+import { AuthenticationError } from '@/domain/entities/errors';
 
 jest.mock('@/application/validation/composite');
 
 describe('FacebookLoginController', () => {
   let sut: FacebookLoginController;
-  let facebookAuth: MockProxy<FacebookAuthentication>;
+  let facebookAuth: jest.Mock;
   let token: string;
 
   beforeAll(() => {
     token = 'valid_token';
-    facebookAuth = mock();
-    facebookAuth.execute.mockResolvedValue(new AccessToken('access_token'));
+    facebookAuth = jest.fn();
+    facebookAuth.mockResolvedValue({ accessToken: 'access_token' });
   });
 
   beforeEach(() => {
@@ -43,8 +39,9 @@ describe('FacebookLoginController', () => {
     });
   });
 
-  it('should return 401 if if authentication fails', async () => {
-    facebookAuth.execute.mockResolvedValueOnce(new AuthenticationError());
+  it('should return 401 if authentication fails', async () => {
+    facebookAuth.mockRejectedValueOnce(new AuthenticationError());
+
     const res = await sut.handle({ token: 'invalid_token' });
 
     expect(res).toEqual({
@@ -56,8 +53,8 @@ describe('FacebookLoginController', () => {
   it('should call FacebookAuthentication with correct params', async () => {
     await sut.handle({ token });
 
-    expect(facebookAuth.execute).toHaveBeenCalledWith({ token: 'valid_token' });
-    expect(facebookAuth.execute).toHaveBeenCalledTimes(1);
+    expect(facebookAuth).toHaveBeenCalledWith({ token: 'valid_token' });
+    expect(facebookAuth).toHaveBeenCalledTimes(1);
   });
 
   it('should return 200 and accessToken if authentication succeeds', async () => {
@@ -66,18 +63,6 @@ describe('FacebookLoginController', () => {
     expect(res).toEqual({
       statusCode: 200,
       data: { accessToken: 'access_token' },
-    });
-  });
-
-  it('should return 500 if authentication throws', async () => {
-    const error = new Error('infra_error');
-    facebookAuth.execute.mockRejectedValueOnce(error);
-
-    const res = await sut.handle({ token });
-
-    expect(res).toEqual({
-      statusCode: 500,
-      data: new ServerError(error),
     });
   });
 });
